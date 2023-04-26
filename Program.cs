@@ -1,10 +1,11 @@
 ﻿using ABP_Task.Models;
-using ABP_Task;
 using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
 using AngleSharp;
 using System.Net;
 using System.Text.Json;
+using Spectre.Console;
+
 
 namespace ABP_Task
 {
@@ -120,7 +121,7 @@ namespace ABP_Task
                         DriversPosition = row.Children[7].TextContent,
                         NumberOfDoors = row.Children[8].TextContent,
                         Destination1 = row.Children[9].TextContent,
-                        Destination2 = row.Children[10].TextContent
+                        Destination2 = row.Children[10].TextContent,
                     };
 
                     FakeDb.CarComplectations.Add(complectation);
@@ -183,7 +184,7 @@ namespace ABP_Task
                 }
                 else
                 {
-                    Console.WriteLine("Picture not found!");
+                    throw new Exception($"Picture not found!");
                 }
             }
             catch (Exception ex)
@@ -196,34 +197,73 @@ namespace ABP_Task
         {
             return source?.Split("hash=")[1] ?? Guid.NewGuid().ToString();
         }
-
+        
         static void ShowCars(string mark)
         {
-            Console.WriteLine($"***{mark.ToUpper()} models***");
+            AnsiConsole.WriteLine($"***{mark.ToUpper()} models***\n");
+
+            var table = new Table()
+                .Border(TableBorder.AsciiDoubleHead)
+                .BorderColor(Color.Green)
+                .AddColumn(new TableColumn("Name").LeftAligned())
+                .AddColumn(new TableColumn("Code").LeftAligned())
+                .AddColumn(new TableColumn("Date Range").LeftAligned())
+                .AddColumn(new TableColumn("Complectation").LeftAligned());
+
             foreach (var car in FakeDb.Cars)
-            { 
-                Console.WriteLine(car);
+            {
+                table.AddRow(car.Name, car.Code, car.DateRange, car.Complectation);
             }
 
+            AnsiConsole.Render(table);
+
             // add blank line.
-            Console.WriteLine();
+            AnsiConsole.WriteLine();
         }
 
         static void ShowComplectation(string mark, string model)
         {
-            Console.WriteLine($"*** Complectation of {mark.ToUpper()}, model: {model} ***");
+            AnsiConsole.WriteLine($"*** Complectation of {mark.ToUpper()}, model: {model} ***");
 
-            Console.WriteLine($"|{nameof(CarComplectation.Complectation),13}|{nameof(CarComplectation.Date),17}|{nameof(CarComplectation.Engine1),7}|{nameof(CarComplectation.Body),4}|{nameof(CarComplectation.Grade),5}|" +
-                $"ATM,MTM|{nameof(CarComplectation.GearShiftType),14}|{nameof(CarComplectation.DriversPosition),15}|{nameof(CarComplectation.NumberOfDoors),13}|" +
-                $"{nameof(CarComplectation.Destination1),12}|{nameof(CarComplectation.Destination2),12}|");
+            var table = new Table()
+                .Border(TableBorder.Ascii)
+                .BorderColor(Color.Green);
+
+            table.AddColumn(nameof(CarComplectation.Complectation));
+            table.AddColumn(nameof(CarComplectation.Date));
+            table.AddColumn(nameof(CarComplectation.Engine1));
+            table.AddColumn(nameof(CarComplectation.Body));
+            table.AddColumn(nameof(CarComplectation.Grade));
+            table.AddColumn(nameof(CarComplectation.Transmission));
+            table.AddColumn(nameof(CarComplectation.GearShiftType));
+            table.AddColumn(nameof(CarComplectation.DriversPosition));
+            table.AddColumn(nameof(CarComplectation.NumberOfDoors));
+            table.AddColumn(nameof(CarComplectation.Destination1));
+            table.AddColumn(nameof(CarComplectation.Destination2));
 
             foreach (var complectation in FakeDb.CarComplectations)
             {
-                Console.WriteLine(complectation);
+                table.AddRow(
+                    complectation.Complectation,
+                    complectation.Date,
+                    complectation.Engine1,
+                    complectation.Body,
+                    complectation.Grade,
+                    complectation.Transmission,
+                    complectation.GearShiftType,
+                    complectation.DriversPosition,
+                    complectation.NumberOfDoors,
+                    complectation.Destination1,
+                    complectation.Destination2
+                );
             }
 
+            AnsiConsole.Render(table);
+
             // add blank line.
-            Console.WriteLine();
+            AnsiConsole.WriteLine();
         }
+
+
     }
 }

@@ -11,7 +11,7 @@ namespace ABP_Task.Models
 
         public override string ToString()
         {
-            return $"{Name}\n{Code,10} {DateRange,15} {Complectation,20}\n";
+            return $"{Name}\n{Code} {DateRange} {Complectation}\n";
         }
     }
 }
