@@ -18,7 +18,7 @@ namespace ABP_Task
             IConfiguration config = Configuration.Default.WithDefaultLoader();
             IBrowsingContext context = BrowsingContext.New(config);
             string url = "https://www.ilcats.ru/";
-            string toyota = "toyota";
+            string toyota = CarMake.Toyota;
 
             // Step 1:
             string baseAddress = url + toyota + "/?function=getModels&market=EU";
@@ -80,6 +80,7 @@ namespace ABP_Task
 
                 FakeDb.Cars.Add(new CarModel
                 {
+                    CarMake = CarMake.Toyota,
                     Name = name?.TextContent ?? "",
                     Code = code?.TextContent ?? "",
                     DateRange = dateRange?.TextContent ?? "",
@@ -165,7 +166,7 @@ namespace ABP_Task
                 string imageSelector = "div.ImageArea > div > img";
 
                 IHtmlImageElement? image = document.QuerySelector<IHtmlImageElement>(imageSelector);
-                string source = image?.Source;
+                string? source = image?.Source;
 
                 if (source != null)
                 {
@@ -200,11 +201,8 @@ namespace ABP_Task
         {
             Console.WriteLine($"***{mark.ToUpper()} models***");
             foreach (var car in FakeDb.Cars)
-            {
-                if (car.Name == mark)
-                {
-                    Console.WriteLine(car);
-                }
+            { 
+                Console.WriteLine(car);
             }
 
             // add blank line.
